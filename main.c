@@ -40,7 +40,7 @@ void *produtor(void *buffer)
     int item;
     int wait;
 
-    printf("Starting producer... %d \n", 1);
+    printf("Starting producer... %d \n", pthread_self());
 
     while (1 < 2)
     {
