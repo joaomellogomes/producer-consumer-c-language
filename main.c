@@ -6,13 +6,8 @@
 #include <pthread.h>
 
 #define TAM_BUFFER 5
-#define SHARED 1
-
-#define FALSE 0
-#define TRUE 1
 
 sem_t empty, full;
-int data;
 
 // Variáveis de controle
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER; // controla entrada na região crítica
@@ -26,24 +21,37 @@ typedef struct s_buff
                                 // (pode funcionar como uma pilha)
 } Buffer;
 
+Buffer myBuffer;
+
 void *produtor(void *buffer)
 {
-    /* Escrever c�digo do Produtor */
-    /* Deve imprimir eventos, indicando n�mero do thread:
+    /* Escrever código do Produtor */
+    /* Deve imprimir eventos, indicando número do thread:
        1. "[P - <num do thread>] Produzindo item x"
        2. "[P - <num do thread>] Armazenando item x no buffer"
        3. Alternativo -> "[P - <num do thread>] Buffer cheio. Aguardando ..."
        4. Alternativo -> "[P - <num do thread>] Buffer liberado. Continuando ..."
      */
 
-    int i = 0;
     int item;
-    int wait;
 
-    printf("Starting producer... %d \n", pthread_self());
-
-    while (1 < 2)
+    for (int index = 0; index < TAM_BUFFER; index++)
     {
+        printf("\nProduzindo item %d", index);
+
+        item = rand();
+
+        pthread_cond_wait(&vazio, &lock);
+
+        pthread_mutex_lock(&lock);
+
+        printf("\nArmazenando item %d no buffer[%d]", item, index);
+
+        myBuffer.buff_dados[index] = item;
+
+        pthread_mutex_unlock(&lock);
+
+        pthread_cond_broadcast(&cheio);
     }
 }
 
