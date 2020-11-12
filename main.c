@@ -21,8 +21,6 @@ typedef struct s_buff
                                 // (pode funcionar como uma pilha)
 } Buffer;
 
-Buffer myBuffer;
-
 void *produtor(void *buffer)
 {
     /* Escrever código do Produtor */
@@ -33,21 +31,21 @@ void *produtor(void *buffer)
        4. Alternativo -> "[P - <num do thread>] Buffer liberado. Continuando ..."
      */
 
-    int item;
+    Buffer *bufferRef = (Buffer *)buffer;
 
-    for (int index = 0; index < TAM_BUFFER; index++)
+    for (bufferRef->fim = 0; bufferRef->fim < TAM_BUFFER; bufferRef->fim++)
     {
-        printf("\nProduzindo item %d", index);
+        printf("\nProduzindo item %d", bufferRef->fim);
 
-        item = rand();
+        int item = rand();
 
         pthread_cond_wait(&vazio, &lock);
 
         pthread_mutex_lock(&lock);
 
-        printf("\nArmazenando item %d no buffer[%d]", item, index);
+        printf("\nArmazenando item %d no buffer[%d]", item, bufferRef->fim);
 
-        myBuffer.buff_dados[index] = item;
+        bufferRef->buff_dados[bufferRef->fim] = item;
 
         pthread_mutex_unlock(&lock);
 
